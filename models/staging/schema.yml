@@ -1,0 +1,326 @@
+version: 2
+
+sources:
+  - name: rr_healthcare
+    database: COCO_PRACTICE_DB
+    schema: PRACTICE
+    description: Source tables for the RR Healthcare practice management system.
+
+    tables:
+      - name: SOURCE_PATIENTS
+        description: Patient demographics, contact details, and insurance information.
+        columns:
+          - name: PATIENT_ID
+            description: Unique identifier for each patient.
+            data_type: TEXT
+          - name: FIRST_NAME
+            description: Patient first name.
+            data_type: TEXT
+          - name: LAST_NAME
+            description: Patient last name.
+            data_type: TEXT
+          - name: GENDER
+            description: Patient gender.
+            data_type: TEXT
+          - name: DATE_OF_BIRTH
+            description: Patient date of birth.
+            data_type: DATE
+          - name: CONTACT_NUMBER
+            description: Patient phone number.
+            data_type: TEXT
+          - name: ADDRESS
+            description: Patient mailing address.
+            data_type: TEXT
+          - name: REGISTRATION_DATE
+            description: Date the patient was registered.
+            data_type: DATE
+          - name: INSURANCE_PROVIDER
+            description: Name of the insurance provider.
+            data_type: TEXT
+          - name: INSURANCE_NUMBER
+            description: Insurance policy number.
+            data_type: TEXT
+          - name: EMAIL
+            description: Patient email address.
+            data_type: TEXT
+
+      - name: SOURCE_DOCTORS
+        description: Doctor profiles including specialization and branch assignment.
+        columns:
+          - name: DOCTOR_ID
+            description: Unique identifier for each doctor.
+            data_type: TEXT
+          - name: FIRST_NAME
+            description: Doctor first name.
+            data_type: TEXT
+          - name: LAST_NAME
+            description: Doctor last name.
+            data_type: TEXT
+          - name: SPECIALIZATION
+            description: Medical specialization.
+            data_type: TEXT
+          - name: PHONE_NUMBER
+            description: Doctor phone number.
+            data_type: TEXT
+          - name: YEARS_EXPERIENCE
+            description: Number of years of professional experience.
+            data_type: NUMBER
+          - name: HOSPITAL_BRANCH
+            description: Hospital branch where the doctor practices.
+            data_type: TEXT
+          - name: EMAIL
+            description: Doctor email address.
+            data_type: TEXT
+
+      - name: SOURCE_APPOINTMENTS
+        description: Scheduled appointments linking patients to doctors.
+        columns:
+          - name: APPOINTMENT_ID
+            description: Unique identifier for each appointment.
+            data_type: TEXT
+          - name: PATIENT_ID
+            description: Foreign key to SOURCE_PATIENTS.
+            data_type: TEXT
+          - name: DOCTOR_ID
+            description: Foreign key to SOURCE_DOCTORS.
+            data_type: TEXT
+          - name: APPOINTMENT_DATE
+            description: Date of the appointment.
+            data_type: DATE
+          - name: APPOINTMENT_TIME
+            description: Time of the appointment.
+            data_type: TIME
+          - name: REASON_FOR_VISIT
+            description: Reason the patient scheduled the visit.
+            data_type: TEXT
+          - name: STATUS
+            description: Appointment status (e.g. Scheduled, Completed, Cancelled).
+            data_type: TEXT
+
+      - name: SOURCE_TREATMENTS
+        description: Treatments administered during appointments.
+        columns:
+          - name: TREATMENT_ID
+            description: Unique identifier for each treatment.
+            data_type: TEXT
+          - name: APPOINTMENT_ID
+            description: Foreign key to SOURCE_APPOINTMENTS.
+            data_type: TEXT
+          - name: TREATMENT_TYPE
+            description: Category of treatment performed.
+            data_type: TEXT
+          - name: DESCRIPTION
+            description: Detailed description of the treatment.
+            data_type: TEXT
+          - name: COST
+            description: Cost of the treatment.
+            data_type: NUMBER
+          - name: TREATMENT_DATE
+            description: Date the treatment was performed.
+            data_type: DATE
+
+      - name: SOURCE_BILLING
+        description: Billing records tied to patient treatments.
+        columns:
+          - name: BILL_ID
+            description: Unique identifier for each bill.
+            data_type: TEXT
+          - name: PATIENT_ID
+            description: Foreign key to SOURCE_PATIENTS.
+            data_type: TEXT
+          - name: TREATMENT_ID
+            description: Foreign key to SOURCE_TREATMENTS.
+            data_type: TEXT
+          - name: BILL_DATE
+            description: Date the bill was generated.
+            data_type: DATE
+          - name: AMOUNT
+            description: Billed amount.
+            data_type: NUMBER
+          - name: PAYMENT_METHOD
+            description: Method of payment (e.g. Cash, Credit Card, Insurance).
+            data_type: TEXT
+          - name: PAYMENT_STATUS
+            description: Payment status (e.g. Paid, Pending, Failed).
+            data_type: TEXT
+
+models:
+  - name: RR_STG_PATIENTS
+    description: Staged patient demographics, contact details, and insurance information.
+    columns:
+      - name: PATIENT_ID
+        description: Unique identifier for each patient.
+        tests:
+          - unique
+          - not_null
+      - name: FIRST_NAME
+        description: Patient first name.
+        tests:
+          - not_null
+      - name: LAST_NAME
+        description: Patient last name.
+        tests:
+          - not_null
+      - name: GENDER
+        description: Patient gender.
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["M", "F"]
+      - name: DATE_OF_BIRTH
+        description: Patient date of birth.
+      - name: CONTACT_NUMBER
+        description: Patient phone number.
+      - name: ADDRESS
+        description: Patient mailing address.
+      - name: REGISTRATION_DATE
+        description: Date the patient was registered.
+      - name: INSURANCE_PROVIDER
+        description: Name of the insurance provider.
+      - name: INSURANCE_NUMBER
+        description: Insurance policy number.
+      - name: EMAIL
+        description: Patient email address.
+
+  - name: RR_STG_DOCTORS
+    description: Staged doctor profiles including specialization and branch assignment.
+    columns:
+      - name: DOCTOR_ID
+        description: Unique identifier for each doctor.
+        tests:
+          - unique
+          - not_null
+      - name: FIRST_NAME
+        description: Doctor first name.
+        tests:
+          - not_null
+      - name: LAST_NAME
+        description: Doctor last name.
+        tests:
+          - not_null
+      - name: SPECIALIZATION
+        description: Medical specialization.
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Dermatology", "Oncology", "Pediatrics"]
+      - name: PHONE_NUMBER
+        description: Doctor phone number.
+      - name: YEARS_EXPERIENCE
+        description: Number of years of professional experience.
+      - name: HOSPITAL_BRANCH
+        description: Hospital branch where the doctor practices.
+      - name: EMAIL
+        description: Doctor email address.
+
+  - name: RR_STG_APPOINTMENTS
+    description: Staged scheduled appointments linking patients to doctors.
+    columns:
+      - name: APPOINTMENT_ID
+        description: Unique identifier for each appointment.
+        tests:
+          - unique
+          - not_null
+      - name: PATIENT_ID
+        description: Foreign key to RR_STG_PATIENTS.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('RR_STG_PATIENTS')
+              field: PATIENT_ID
+      - name: DOCTOR_ID
+        description: Foreign key to RR_STG_DOCTORS.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('RR_STG_DOCTORS')
+              field: DOCTOR_ID
+      - name: APPOINTMENT_DATE
+        description: Date of the appointment.
+        tests:
+          - not_null
+      - name: APPOINTMENT_TIME
+        description: Time of the appointment.
+      - name: REASON_FOR_VISIT
+        description: Reason the patient scheduled the visit.
+      - name: STATUS
+        description: Appointment status.
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Scheduled", "Completed", "Cancelled", "No-show"]
+
+  - name: RR_STG_TREATMENTS
+    description: Staged treatments administered during appointments.
+    columns:
+      - name: TREATMENT_ID
+        description: Unique identifier for each treatment.
+        tests:
+          - unique
+          - not_null
+      - name: APPOINTMENT_ID
+        description: Foreign key to RR_STG_APPOINTMENTS.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('RR_STG_APPOINTMENTS')
+              field: APPOINTMENT_ID
+      - name: TREATMENT_TYPE
+        description: Category of treatment performed.
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Chemotherapy", "ECG", "MRI", "Physiotherapy", "X-Ray"]
+      - name: DESCRIPTION
+        description: Detailed description of the treatment.
+      - name: COST
+        description: Cost of the treatment.
+        tests:
+          - not_null
+      - name: TREATMENT_DATE
+        description: Date the treatment was performed.
+        tests:
+          - not_null
+
+  - name: RR_STG_BILLING
+    description: Staged billing records tied to patient treatments.
+    columns:
+      - name: BILL_ID
+        description: Unique identifier for each bill.
+        tests:
+          - unique
+          - not_null
+      - name: PATIENT_ID
+        description: Foreign key to RR_STG_PATIENTS.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('RR_STG_PATIENTS')
+              field: PATIENT_ID
+      - name: TREATMENT_ID
+        description: Foreign key to RR_STG_TREATMENTS.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('RR_STG_TREATMENTS')
+              field: TREATMENT_ID
+      - name: BILL_DATE
+        description: Date the bill was generated.
+        tests:
+          - not_null
+      - name: AMOUNT
+        description: Billed amount.
+        tests:
+          - not_null
+      - name: PAYMENT_METHOD
+        description: Method of payment.
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Cash", "Credit Card", "Insurance"]
+      - name: PAYMENT_STATUS
+        description: Payment status.
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Failed", "Paid", "Pending"]
