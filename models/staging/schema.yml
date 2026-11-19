@@ -166,7 +166,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ["M", "F"]
+              arguments:
+                values: ["M", "F"]
       - name: DATE_OF_BIRTH
         description: Patient date of birth.
       - name: CONTACT_NUMBER
@@ -203,7 +204,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ["Dermatology", "Oncology", "Pediatrics"]
+              arguments:
+                values: ["Dermatology", "Oncology", "Pediatrics"]
       - name: PHONE_NUMBER
         description: Doctor phone number.
       - name: YEARS_EXPERIENCE
@@ -226,15 +228,17 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('RR_STG_PATIENTS')
-              field: PATIENT_ID
+              arguments:
+                to: ref('RR_STG_PATIENTS')
+                field: PATIENT_ID
       - name: DOCTOR_ID
         description: Foreign key to RR_STG_DOCTORS.
         tests:
           - not_null
           - relationships:
-              to: ref('RR_STG_DOCTORS')
-              field: DOCTOR_ID
+              arguments:
+                to: ref('RR_STG_DOCTORS')
+                field: DOCTOR_ID
       - name: APPOINTMENT_DATE
         description: Date of the appointment.
         tests:
@@ -248,7 +252,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ["Scheduled", "Completed", "Cancelled", "No-show"]
+              arguments:
+                values: ["Scheduled", "Completed", "Cancelled", "No-show"]
 
   - name: RR_STG_TREATMENTS
     description: Staged treatments administered during appointments.
@@ -263,14 +268,16 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('RR_STG_APPOINTMENTS')
-              field: APPOINTMENT_ID
+              arguments:
+                to: ref('RR_STG_APPOINTMENTS')
+                field: APPOINTMENT_ID
       - name: TREATMENT_TYPE
         description: Category of treatment performed.
         tests:
           - not_null
           - accepted_values:
-              values: ["Chemotherapy", "ECG", "MRI", "Physiotherapy", "X-Ray"]
+              arguments:
+                values: ["Chemotherapy", "ECG", "MRI", "Physiotherapy", "X-Ray"]
       - name: DESCRIPTION
         description: Detailed description of the treatment.
       - name: COST
@@ -295,15 +302,17 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('RR_STG_PATIENTS')
-              field: PATIENT_ID
+              arguments:
+                to: ref('RR_STG_PATIENTS')
+                field: PATIENT_ID
       - name: TREATMENT_ID
         description: Foreign key to RR_STG_TREATMENTS.
         tests:
           - not_null
           - relationships:
-              to: ref('RR_STG_TREATMENTS')
-              field: TREATMENT_ID
+              arguments:
+                to: ref('RR_STG_TREATMENTS')
+                field: TREATMENT_ID
       - name: BILL_DATE
         description: Date the bill was generated.
         tests:
@@ -317,10 +326,12 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ["Cash", "Credit Card", "Insurance"]
+              arguments:
+                values: ["Cash", "Credit Card", "Insurance"]
       - name: PAYMENT_STATUS
         description: Payment status.
         tests:
           - not_null
           - accepted_values:
-              values: ["Failed", "Paid", "Pending"]
+              arguments:
+                values: ["Failed", "Paid", "Pending"]
